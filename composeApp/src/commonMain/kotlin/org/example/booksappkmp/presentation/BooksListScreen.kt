@@ -103,8 +103,16 @@ fun BooksListScreen(
                                         null,
                                         onClick = {
                                             navController.currentBackStackEntry?.savedStateHandle?.set(
-                                                "data",
-                                                Json.encodeToString(it)
+                                                "image_url",
+                                                it.cover
+                                            )
+                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                "title",
+                                                it.title
+                                            )
+                                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                                "description",
+                                                it.description
                                             )
                                             navController.navigate("details_screen") {
                                                 launchSingleTop = true

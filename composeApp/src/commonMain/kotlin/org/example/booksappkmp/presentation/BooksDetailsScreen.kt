@@ -47,13 +47,25 @@ fun BookDetailsScreen(
     animatedContentScope: AnimatedContentScope,
     sharedTransitionScope: SharedTransitionScope
 ) {
-    val data by remember {
+    val imageUrl by remember {
         mutableStateOf(
-            Json.decodeFromString<BooksListResponseItem>(
-                navController.previousBackStackEntry?.savedStateHandle?.get(
-                    "data"
-                ) ?: ""
-            )
+            navController.previousBackStackEntry?.savedStateHandle?.get(
+                "image_url"
+            ) ?: ""
+        )
+    }
+    val title by remember {
+        mutableStateOf(
+            navController.previousBackStackEntry?.savedStateHandle?.get(
+                "title"
+            ) ?: ""
+        )
+    }
+    val description by remember {
+        mutableStateOf(
+            navController.previousBackStackEntry?.savedStateHandle?.get(
+                "description"
+            ) ?: ""
         )
     }
     with(sharedTransitionScope) {
@@ -88,14 +100,14 @@ fun BookDetailsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SubcomposeAsyncImage(
-                    model = data.cover,
+                    model = imageUrl,
                     contentDescription = null,
                     loading = {
                         CircularProgressIndicator()
                     },
                     modifier = Modifier
                         .sharedElement(
-                            rememberSharedContentState(key = data.cover),
+                            rememberSharedContentState(key = imageUrl),
                             animatedVisibilityScope = animatedContentScope
                         )
                         .height(300.dp)
@@ -107,12 +119,12 @@ fun BookDetailsScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = data.title,
+                    text = title,
                     fontFamily = Serif,
                     modifier = Modifier
                         .fillMaxWidth()
                         .sharedElement(
-                            state = rememberSharedContentState(key = data.title),
+                            state = rememberSharedContentState(key = title),
                             animatedVisibilityScope = animatedContentScope
                         ).skipToLookaheadSize(),
                     fontWeight = FontWeight.SemiBold,
@@ -120,12 +132,12 @@ fun BookDetailsScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = data.description,
+                    text = description,
                     fontFamily = Serif,
                     fontSize = 13.sp,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.sharedElement(
-                        state = rememberSharedContentState(key = data.description),
+                        state = rememberSharedContentState(key = description),
                         animatedVisibilityScope = animatedContentScope
                     ).skipToLookaheadSize()
                 )
