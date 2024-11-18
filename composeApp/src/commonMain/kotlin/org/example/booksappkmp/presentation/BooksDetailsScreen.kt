@@ -12,13 +12,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,7 +40,7 @@ import coil3.compose.SubcomposeAsyncImage
 import kotlinx.serialization.json.Json
 import org.example.booksappkmp.modal.BooksListResponseItem
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BookDetailsScreen(
     navController: NavController,
@@ -44,7 +49,11 @@ fun BookDetailsScreen(
 ) {
     val data by remember {
         mutableStateOf(
-            Json.decodeFromString<BooksListResponseItem>(navController.previousBackStackEntry?.savedStateHandle?.get("data") ?: "")
+            Json.decodeFromString<BooksListResponseItem>(
+                navController.previousBackStackEntry?.savedStateHandle?.get(
+                    "data"
+                ) ?: ""
+            )
         )
     }
     with(sharedTransitionScope) {
@@ -55,6 +64,18 @@ fun BookDetailsScreen(
                         Text(
                             "Book Details"
                         )
+                    },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
                     }
                 )
             }
@@ -91,9 +112,9 @@ fun BookDetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .sharedElement(
-                        state = rememberSharedContentState(key = data.title),
-                        animatedVisibilityScope = animatedContentScope
-                    ),
+                            state = rememberSharedContentState(key = data.title),
+                            animatedVisibilityScope = animatedContentScope
+                        ).skipToLookaheadSize(),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
@@ -103,10 +124,10 @@ fun BookDetailsScreen(
                     fontFamily = Serif,
                     fontSize = 13.sp,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.sharedBounds(
-                        sharedContentState = rememberSharedContentState(key = data.description),
+                    modifier = Modifier.sharedElement(
+                        state = rememberSharedContentState(key = data.description),
                         animatedVisibilityScope = animatedContentScope
-                    )
+                    ).skipToLookaheadSize()
                 )
             }
         }

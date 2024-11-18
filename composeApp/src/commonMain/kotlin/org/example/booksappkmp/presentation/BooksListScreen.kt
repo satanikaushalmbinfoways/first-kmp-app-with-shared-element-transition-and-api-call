@@ -13,16 +13,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,14 +43,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.example.booksappkmp.modal.BooksListResponseItem
 import org.example.booksappkmp.viewmodel.BooksViewModel
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BooksListScreen(
     navController: NavController,
@@ -75,7 +78,9 @@ fun BooksListScreen(
                     }
                 ) { innerPadding ->
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
                         state = listState,
                         contentPadding = PaddingValues(10.dp, 25.dp),
                         verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -86,7 +91,7 @@ fun BooksListScreen(
                                 it.number
                             },
                             contentType = {
-                                BooksListResponseItem
+                                it
                             }
                         ) {
                             ListItem(
@@ -107,39 +112,35 @@ fun BooksListScreen(
                                         }
                                     )
                                     .fillMaxWidth()
-                                    .background(
-                                        Color.LightGray.copy(0.4f),
-                                        shape = RoundedCornerShape(10.dp)
+                                    .padding(
+                                        vertical = 10.dp
                                     )
-                                    .height(200.dp).padding(
-                                        vertical = 8.dp
-                                    ),
-                                text = {
+                                    .clip(shape = RoundedCornerShape(10.dp)),
+                                headlineContent = {
                                     Text(
                                         text = it.title,
                                         fontFamily = Serif,
                                         modifier = Modifier.sharedElement(
                                             state = rememberSharedContentState(key = it.title),
                                             animatedVisibilityScope = animatedContentScope
-                                        )
-                                        ,
+                                        ),
                                         fontWeight = FontWeight.SemiBold,
                                     )
                                 },
-                                icon = {
-                                    SubcomposeAsyncImage(
+                                leadingContent = {
+                                    AsyncImage(
                                         model = it.cover,
                                         contentDescription = null,
-                                        loading = {
-                                            CircularProgressIndicator()
-                                        },
+//                                        loading = {
+//                                            CircularProgressIndicator()
+//                                        },
                                         modifier = Modifier
 //                                        .padding(vertical = 8.dp)
                                             .sharedElement(
                                                 state = rememberSharedContentState(key = it.cover),
                                                 animatedVisibilityScope = animatedContentScope
                                             )
-                                            .height(200.dp)
+                                            .height(160.dp)
                                             .clip(
                                                 RoundedCornerShape(10)
                                             ),
@@ -147,7 +148,7 @@ fun BooksListScreen(
                                         clipToBounds = true,
                                     )
                                 },
-                                secondaryText = {
+                                supportingContent = {
                                     Text(
                                         text = it.description,
                                         fontFamily = Serif,
@@ -155,14 +156,17 @@ fun BooksListScreen(
                                         maxLines = 4,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier
-                                            .sharedBounds(
-                                                sharedContentState = rememberSharedContentState(key = it.description),
+                                            .sharedElement(
+                                                state = rememberSharedContentState(key = it.description),
                                                 animatedVisibilityScope = animatedContentScope
                                             ).padding(
-                                            vertical = 12.dp
-                                        )
+                                                vertical = 12.dp
+                                            )
                                     )
-                                }
+                                },
+                                colors = ListItemDefaults.colors(
+                                    containerColor = Color.LightGray.copy(0.4f),
+                                )
                             )
                         }
                     }
