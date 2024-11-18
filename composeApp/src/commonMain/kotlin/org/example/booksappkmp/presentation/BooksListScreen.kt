@@ -48,6 +48,7 @@ import coil3.compose.SubcomposeAsyncImage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.example.booksappkmp.viewmodel.BooksViewModel
+import org.example.booksappkmp.viewmodel.BooksViewModelProvider
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +57,7 @@ fun BooksListScreen(
     animatedContentScope: AnimatedContentScope,
     sharedTransitionScope: SharedTransitionScope
 ) {
-    val booksViewModel = viewModel<BooksViewModel>()
+    val booksViewModel = viewModel<BooksViewModel>(factory = BooksViewModelProvider())
     val booksList by booksViewModel.booksResponse.collectAsStateWithLifecycle()
     val isLoading by booksViewModel.isLoading.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
