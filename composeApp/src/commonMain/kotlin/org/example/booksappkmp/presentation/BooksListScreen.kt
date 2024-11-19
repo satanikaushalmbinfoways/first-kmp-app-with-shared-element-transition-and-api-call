@@ -3,7 +3,6 @@ package org.example.booksappkmp.presentation
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -44,9 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import coil3.compose.SubcomposeAsyncImage
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import org.example.booksappkmp.db.BooksDao
 import org.example.booksappkmp.viewmodel.BooksViewModel
 import org.example.booksappkmp.viewmodel.BooksViewModelProvider
 
@@ -55,10 +49,11 @@ import org.example.booksappkmp.viewmodel.BooksViewModelProvider
 fun BooksListScreen(
     navController: NavController,
     animatedContentScope: AnimatedContentScope,
-    sharedTransitionScope: SharedTransitionScope
+    sharedTransitionScope: SharedTransitionScope,
+    booksDao: BooksDao
 ) {
-    val booksViewModel = viewModel<BooksViewModel>(factory = BooksViewModelProvider())
-    val booksList by booksViewModel.booksResponse.collectAsStateWithLifecycle()
+    val booksViewModel = viewModel<BooksViewModel>(factory = BooksViewModelProvider(booksDao))
+    val booksList by booksDao.getAllBooks().collectAsStateWithLifecycle(emptyList())
     val isLoading by booksViewModel.isLoading.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     with(sharedTransitionScope) {

@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version "1.9.10"
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -53,6 +55,8 @@ kotlin {
             implementation(libs.lifecycle.viewmodel.compose)
             implementation(libs.bundles.coil)
             implementation(libs.navigation.compose)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -87,7 +91,22 @@ android {
     }
 }
 
+room {
+    // Applies to 'demoDebug' only
+    schemaDirectory("demoDebug", "$projectDir/schemas/demoDebug")
+
+    // Applies to 'demoDebug' and 'demoRelease'
+    schemaDirectory("demo", "$projectDir/schemas/demo")
+
+    // Applies to 'demoDebug' and 'fullDebug'
+    schemaDirectory("debug", "$projectDir/schemas/debug")
+
+    // Applies to variants that aren't matched by other configurations.
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
+    ksp(libs.room.compiler)
 }
 

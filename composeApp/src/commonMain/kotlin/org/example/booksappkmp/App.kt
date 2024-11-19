@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.example.booksappkmp.db.BooksDao
 import org.example.booksappkmp.presentation.BookDetailsScreen
 import org.example.booksappkmp.presentation.BooksListScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -22,8 +23,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 @Preview
-fun App() {
-
+fun App(booksDao: BooksDao) {
     val navController = rememberNavController()
     SharedTransitionLayout {
         NavHost(
@@ -81,7 +81,7 @@ fun App() {
             composable(
                 "list_screen"
             ) {
-                BooksListScreen(navController, this, this@SharedTransitionLayout)
+                BooksListScreen(navController, this, this@SharedTransitionLayout, booksDao)
             }
 
             composable("details_screen") {
